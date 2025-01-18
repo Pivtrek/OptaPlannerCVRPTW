@@ -48,4 +48,5 @@ public class VehicleController {
 //        Vehicle vehicle = vehicleService.updateVehicle(id, updatedVehicle);
 //        return ResponseEntity.ok(vehicle);
 //    }
+
 }
