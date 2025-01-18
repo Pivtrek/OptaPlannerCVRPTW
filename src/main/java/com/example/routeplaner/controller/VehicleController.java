@@ -25,7 +25,6 @@ public class VehicleController {
 
     @PostMapping
     public ResponseEntity<?> addVehicle(@RequestBody Vehicle vehicle, Authentication authentication) {
-        Long userId = Long.valueOf(JwtUtil.validateToken(authentication.getCredentials().toString())); // Extract userId from token
         vehicleService.saveVehicle(vehicle);
         return ResponseEntity.ok(vehicle);
     }
