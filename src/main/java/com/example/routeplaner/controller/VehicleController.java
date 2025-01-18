@@ -25,11 +25,9 @@ public class VehicleController {
     private VehicleService vehicleService;
 
     @PostMapping
-    public ResponseEntity<?> addVehicle(@RequestBody Vehicle vehicle, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
+    public ResponseEntity<?> addVehicle(@RequestBody Vehicle vehicle, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = JwtUtil.extractUserId(token);
         vehicleService .saveVehicle(vehicle, userId);
         return ResponseEntity.ok(vehicle);
     }
