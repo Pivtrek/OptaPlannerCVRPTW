@@ -6,6 +6,7 @@ import com.example.routeplaner.model.Vehicle;
 import com.example.routeplaner.repository.UserRepository;
 import com.example.routeplaner.service.VehicleService;
 import com.example.routeplaner.utils.JwtUtil;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,8 @@ public class VehicleController {
     private VehicleService vehicleService;
 
     @PostMapping
-    public ResponseEntity<?> addVehicle(@RequestBody Vehicle vehicle, Authentication authentication) {
+    public ResponseEntity<?> addVehicle(@RequestBody Vehicle vehicle, HttpSession session) {
+        System.out.println(session.getAttribute("userId"));
         vehicleService.saveVehicle(vehicle);
         return ResponseEntity.ok(vehicle);
     }

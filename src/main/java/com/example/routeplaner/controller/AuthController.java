@@ -7,6 +7,7 @@ import com.example.routeplaner.model.RegisterRequest;
 import com.example.routeplaner.repository.UserRepository;
 import com.example.routeplaner.service.UserService;
 import com.example.routeplaner.utils.JwtUtil;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,9 +36,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {
         User user = userService.authenticateUser(request.getUsername(), request.getPassword());
         String token = JwtUtil.generateToken(user.getUsername());
+        session.setAttribute("userId", user.getId());
+        session.setAttribute("username", user.getUsername());
         return ResponseEntity.ok(new LoginResponse(token));
     }
 }
