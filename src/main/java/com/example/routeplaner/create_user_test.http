@@ -1,0 +1,9 @@
+### Rejestracja użytkownika
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin",
+  "email": "admin@admin.pl"
+}

@@ -1,0 +1,11 @@
+POST http://localhost:8080/api/vehicles
+Content-Type: application/json
+
+{
+  "name": "Truck 5",
+  "capacity": 5000,
+  "type": "truck",
+  "user": {
+    "id": 8
+  }
+}
