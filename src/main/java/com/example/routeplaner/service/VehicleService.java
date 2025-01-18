@@ -15,8 +15,12 @@ public class VehicleService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public Vehicle saveVehicle(Vehicle vehicle) {
+    public Vehicle saveVehicle(Vehicle vehicle, Long userId) {
+        User user = userRepository.findById(userId).get();
+        vehicle.setUser(user);
         return vehicleRepository.save(vehicle);
     }
 

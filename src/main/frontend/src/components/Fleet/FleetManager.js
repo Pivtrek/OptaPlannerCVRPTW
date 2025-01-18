@@ -3,14 +3,14 @@ import api from "../../api/axios";
 
 function FleetManager() {
     const [vehicles, setVehicles] = useState([]);
-    const [newVehicle, setNewVehicle] = useState({ name: "", capacity: "", type: "" });
+    const [newVehicle, setNewVehicle] = useState({ name: "", capacity: "", type: ""});
     const [editingVehicle, setEditingVehicle] = useState(null); // Dodano brakującą zmienną
 
     // Pobieranie listy pojazdów z backendu
     const fetchVehicles = async () => {
         try {
             const response = await api.get("/vehicles", {
-                params: { userId: 1 }, // Przykładowe userId
+                params: { userId: 8 }, // Przykładowe userId
             });
             setVehicles(response.data);
         } catch (error) {
@@ -25,7 +25,6 @@ function FleetManager() {
                 name: newVehicle.name,
                 capacity: newVehicle.capacity,
                 type: newVehicle.type,
-                userId: 1,
             });
             setVehicles((prev) => [...prev, response.data]);
             setNewVehicle({ name: "", capacity: "", type: "" }); // Reset formularza

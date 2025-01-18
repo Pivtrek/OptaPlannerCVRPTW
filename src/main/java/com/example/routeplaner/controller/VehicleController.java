@@ -25,9 +25,10 @@ public class VehicleController {
     private VehicleService vehicleService;
 
     @PostMapping
-    public ResponseEntity<?> addVehicle(@RequestBody Vehicle vehicle, HttpSession session) {
-        System.out.println(session.getAttribute("userId"));
-        vehicleService.saveVehicle(vehicle);
+    public ResponseEntity<?> addVehicle(@RequestBody Vehicle vehicle, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = JwtUtil.extractUserId(token);
+        vehicleService .saveVehicle(vehicle, userId);
         return ResponseEntity.ok(vehicle);
     }
 
