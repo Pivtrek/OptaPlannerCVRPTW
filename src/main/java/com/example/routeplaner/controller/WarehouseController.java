@@ -2,8 +2,10 @@ package com.example.routeplaner.controller;
 
 import com.example.routeplaner.model.Warehouse;
 import com.example.routeplaner.service.WarehouseService;
+import com.example.routeplaner.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +18,12 @@ public class WarehouseController {
     private WarehouseService warehouseService;
 
     @PostMapping
-    public ResponseEntity<Warehouse> addWarehouse(@RequestBody Warehouse warehouse) {
-        Warehouse savedWarehouse = warehouseService.saveWarehouse(warehouse);
-        return ResponseEntity.ok(savedWarehouse);
+    public ResponseEntity<Warehouse> addWarehouse(@RequestBody Warehouse warehouse, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = JwtUtil.extractUserId(token);
+        warehouse.setId(userId);
+        warehouseService.saveWarehouse(warehouse, userId);
+        return ResponseEntity.ok(warehouse);
     }
 
     @GetMapping
