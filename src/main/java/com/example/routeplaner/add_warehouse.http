@@ -1,0 +1,15 @@
+POST http://localhost:8080/api/warehouses
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4IiwiaWF0IjoxNzM3MzA5NTQ2LCJleHAiOjE3MzczOTU5NDZ9.kld6obSnFuvemWXisP4Mc89K8xyinL4KKTteytWwUGg
+Content-Type: application/json
+
+
+{
+  "name": "Unauthorized Warehouse",
+  "address": "456 Example Street",
+  "latitude": 52.2296756,
+  "longitude": 21.0122287,
+  "openingHours": "09:00-17:00",
+  "user":{
+    "id": 8
+  }
+}

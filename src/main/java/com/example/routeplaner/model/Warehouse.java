@@ -1,6 +1,11 @@
 package com.example.routeplaner.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 public class Warehouse {
@@ -24,9 +29,10 @@ public class Warehouse {
     @Column(nullable = true)
     private String openingHours; // np. "08:00-16:00", opcjonalne
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne // Domyślnie jest LAZY
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonBackReference
+    @JsonIgnoreProperties({"username", "email", "password", "hibernateLazyInitializer", "handler"})
     private User user;
 
     // Getters and setters

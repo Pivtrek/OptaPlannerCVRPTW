@@ -1,7 +1,10 @@
 package com.example.routeplaner.service;
 
+import com.example.routeplaner.model.User;
 import com.example.routeplaner.model.Warehouse;
+import com.example.routeplaner.repository.UserRepository;
 import com.example.routeplaner.repository.WarehouseRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +16,12 @@ public class WarehouseService {
     @Autowired
     private WarehouseRepository warehouseRepository;
 
-    public Warehouse saveWarehouse(Warehouse warehouse) {
+    @Autowired
+    private UserRepository userRepository;
+
+    public Warehouse saveWarehouse(Warehouse warehouse, Long userId) {
+        User user = userRepository.findById(userId).get();
+        warehouse.setUser(user);
         return warehouseRepository.save(warehouse);
     }
 
