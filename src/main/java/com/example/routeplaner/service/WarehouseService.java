@@ -4,6 +4,7 @@ import com.example.routeplaner.model.User;
 import com.example.routeplaner.model.Warehouse;
 import com.example.routeplaner.repository.UserRepository;
 import com.example.routeplaner.repository.WarehouseRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

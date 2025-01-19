@@ -3,6 +3,7 @@ package com.example.routeplaner.controller;
 import com.example.routeplaner.model.Warehouse;
 import com.example.routeplaner.service.WarehouseService;
 import com.example.routeplaner.utils.JwtUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,13 +22,14 @@ public class WarehouseController {
     public ResponseEntity<Warehouse> addWarehouse(@RequestBody Warehouse warehouse, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         Long userId = JwtUtil.extractUserId(token);
-        warehouse.setId(userId);
         warehouseService.saveWarehouse(warehouse, userId);
         return ResponseEntity.ok(warehouse);
     }
 
     @GetMapping
-    public ResponseEntity<List<Warehouse>> getWarehousesByUserId(@RequestParam Long userId) {
+    public ResponseEntity<List<Warehouse>> getWarehousesByUserId(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = JwtUtil.extractUserId(token);
         List<Warehouse> warehouses = warehouseService.getWarehousesByUserId(userId);
         return ResponseEntity.ok(warehouses);
     }
