@@ -1,9 +1,14 @@
 package com.example.routeplaner.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Vehicle {
 
     @Id
@@ -18,9 +23,9 @@ public class Vehicle {
 
     @Column(nullable = false)
     private String type; // np. "truck", "van", "car"
-
-    @ManyToOne(fetch = FetchType.EAGER) // Domyślnie jest LAZY
+    @ManyToOne(fetch = FetchType.LAZY) // Domyślnie jest LAZY
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     @JsonIgnoreProperties({"username", "email", "password", "hibernateLazyInitializer", "handler"})
     private User user;
 

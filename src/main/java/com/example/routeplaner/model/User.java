@@ -1,5 +1,7 @@
 package com.example.routeplaner.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vehicle> vehicles;
 
