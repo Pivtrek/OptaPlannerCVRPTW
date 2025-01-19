@@ -9,9 +9,7 @@ function FleetManager() {
     // Pobieranie listy pojazdów z backendu
     const fetchVehicles = async () => {
         try {
-            const response = await api.get("/vehicles", {
-                params: { userId: 8 }, // Przykładowe userId
-            });
+            const response = await api.get("/vehicles");
             setVehicles(response.data);
         } catch (error) {
             console.error("Błąd podczas pobierania pojazdów:", error);

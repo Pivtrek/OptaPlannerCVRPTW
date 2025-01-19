@@ -33,8 +33,9 @@ public class VehicleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Vehicle>> getVehicles(Authentication authentication) {
-        Long userId = Long.valueOf(JwtUtil.validateToken(authentication.getCredentials().toString())); // Extract userId from token
+    public ResponseEntity<List<Vehicle>> getVehicles(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = JwtUtil.extractUserId(token); // Extract userId from token
         List<Vehicle> vehicles = vehicleService.getVehiclesByUserId(userId);
         return ResponseEntity.ok(vehicles);
     }
