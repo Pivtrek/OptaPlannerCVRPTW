@@ -113,72 +113,33 @@ function FleetManager() {
                 <button type="submit">Dodaj pojazd</button>
             </form>
 
-            {/* Formularz edycji pojazdu */}
-            {editingVehicle && (
-                <div>
-                    <h2>Edytuj Pojazd</h2>
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            updateVehicle(editingVehicle.id, editingVehicle);
-                            setEditingVehicle(null);
-                        }}
-                    >
-                        <div>
-                            <label>Nazwa:</label>
-                            <input
-                                type="text"
-                                value={editingVehicle.name}
-                                onChange={(e) =>
-                                    setEditingVehicle({...editingVehicle, name: e.target.value})
-                                }
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Pojemność (kg):</label>
-                            <input
-                                type="number"
-                                value={editingVehicle.capacity}
-                                onChange={(e) =>
-                                    setEditingVehicle({...editingVehicle, capacity: e.target.value})
-                                }
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Typ:</label>
-                            <input
-                                type="text"
-                                value={editingVehicle.type}
-                                onChange={(e) =>
-                                    setEditingVehicle({...editingVehicle, type: e.target.value})
-                                }
-                                required
-                            />
-                        </div>
-                        <button type="submit">Zapisz</button>
-                        <button onClick={() => setEditingVehicle(null)}>Anuluj</button>
-                    </form>
-                </div>
-            )}
-
             {/* Lista pojazdów */}
             <h2>Lista pojazdów</h2>
-            <div>
-                <h2>Lista pojazdów</h2>
+            <ul>
                 {vehicles.length === 0 ? (
                     <p>Brak pojazdów do wyświetlenia.</p>
                 ) : (
-                    <ul>
-                        {vehicles.map((vehicle) => (
-                            <li key={vehicle.id}>
-                                {vehicle.name} - {vehicle.capacity} kg - {vehicle.type}
-                            </li>
-                        ))}
-                    </ul>
+                    vehicles.map((vehicle) => (
+                        <li key={vehicle.id}>
+                            {vehicle.name} - {vehicle.capacity} kg - {vehicle.type}
+                            <button
+                                onClick={() => deleteVehicle(vehicle.id)}
+                                style={{
+                                    marginLeft: "10px",
+                                    color: "white",
+                                    backgroundColor: "red",
+                                    border: "none",
+                                    borderRadius: "5px",
+                                    cursor: "pointer",
+                                    padding: "5px 10px",
+                                }}
+                            >
+                                Usuń
+                            </button>
+                        </li>
+                    ))
                 )}
-            </div>
+            </ul>
         </div>
     );
 }
