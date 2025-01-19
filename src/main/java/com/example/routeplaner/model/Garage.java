@@ -1,6 +1,9 @@
 package com.example.routeplaner.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,17 +17,19 @@ public class Garage {
     private String name;
 
     @Column(nullable = false)
-    private String location;
-
-    @Column(nullable = false)
     private Double latitude;
 
     @Column(nullable = false)
     private Double longitude;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "garage_id") // Klucz obcy w tabeli Vehicle
-    private List<Vehicle> vehicles;
+    @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("garage")
+    private List<Vehicle> vehicles = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"email", "password", "vehicles", "warehouses"})
+    private User user;
 
     // Gettery i Settery
     public Long getId() {
@@ -41,14 +46,6 @@ public class Garage {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public Double getLatitude() {
