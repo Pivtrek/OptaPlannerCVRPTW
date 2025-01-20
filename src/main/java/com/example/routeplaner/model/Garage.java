@@ -23,7 +23,7 @@ public class Garage {
     private Double longitude;
 
     @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("garage")
+    @JsonIgnoreProperties({"garage", "hibernateLazyInitializer", "handler"})
     private List<Vehicle> vehicles = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -70,5 +70,13 @@ public class Garage {
 
     public void setVehicles(List<Vehicle> vehicles) {
         this.vehicles = vehicles;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
