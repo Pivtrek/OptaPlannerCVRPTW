@@ -9,6 +9,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@PlanningEntity
 public class Vehicle {
 
     @Id
@@ -23,7 +24,8 @@ public class Vehicle {
 
     @Column(nullable = false)
     private String type; // np. "truck", "van", "car"
-    @ManyToOne(fetch = FetchType.LAZY) // Domyślnie jest LAZY
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     @JsonIgnoreProperties({"username", "email", "password", "hibernateLazyInitializer", "handler"})
@@ -34,8 +36,8 @@ public class Vehicle {
     @JsonIgnoreProperties({"vehicles", "hibernateLazyInitializer", "handler"})
     private Garage garage;
 
+    // Getters and setters (wygenerowane przez Lombok)
 
-    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -74,5 +76,22 @@ public class Vehicle {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Garage getGarage() {
+        return garage;
+    }
+
+    public void setGarage(Garage garage) {
+        this.garage = garage;
+    }
+
+
+    // Metoda do pobrania lokalizacji z garażu
+    public double[] getLocation() {
+        if (garage != null) {
+            return new double[]{garage.getLatitude(), garage.getLongitude()};
+        }
+        throw new IllegalStateException("Vehicle is not assigned to any garage.");
     }
 }
