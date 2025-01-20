@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
-import GoogleMapReact from "google-map-react";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
 function GarageManager() {
     const [garages, setGarages] = useState([]);
@@ -9,6 +9,16 @@ function GarageManager() {
     const [selectedGarage, setSelectedGarage] = useState(null);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [mapCenter, setMapCenter] = useState({ lat: 52.2296756, lng: 21.0122287 });
+
+    const mapContainerStyle = {
+        width: "100%",
+        height: "400px",
+    };
+
+    const center = {
+        lat: 52.2296756,
+        lng: 21.0122287,
+    };
 
     const fetchGarages = async () => {
         try {
@@ -85,27 +95,24 @@ function GarageManager() {
                         required
                     />
                 </div>
-                <div style={{ height: "400px", width: "100%" }}>
-                    <GoogleMapReact
-                        bootstrapURLKeys={{ key: "<YOUR_GOOGLE_MAPS_API_KEY>" }}
-                        center={mapCenter}
-                        defaultZoom={11}
-                        onClick={({ lat, lng }) => setNewGarage({ ...newGarage, latitude: lat, longitude: lng })}
+                <div>
+                    <label>Wybierz lokalizację na mapie:</label>
+                    <GoogleMap
+                        mapContainerStyle={mapContainerStyle}
+                        zoom={12}
+                        center={center}
+                        onClick={(event) => {
+                            setNewGarage({
+                                ...newGarage,
+                                latitude: event.latLng.lat(),
+                                longitude: event.latLng.lng(),
+                            });
+                        }}
                     >
                         {newGarage.latitude && newGarage.longitude && (
-                            <div
-                                lat={newGarage.latitude}
-                                lng={newGarage.longitude}
-                                style={{
-                                    color: "red",
-                                    fontSize: "20px",
-                                    fontWeight: "bold",
-                                }}
-                            >
-                                📍
-                            </div>
+                            <Marker position={{lat: newGarage.latitude, lng: newGarage.longitude}}/>
                         )}
-                    </GoogleMapReact>
+                    </GoogleMap>
                 </div>
                 <button type="submit">Dodaj Garaż</button>
             </form>
@@ -121,18 +128,20 @@ function GarageManager() {
                             <strong>{garage.name}</strong> ({garage.latitude}, {garage.longitude})
                             <button onClick={() => deleteGarage(garage.id)}>Usuń</button>
                             <div>
-                                <label>Przypisz pojazd:</label>
+                            <label>Przypisz pojazd:</label>
                                 <select
-                                    value={selectedVehicle || ""}
-                                    onChange={(e) => setSelectedVehicle(e.target.value)}
-                                >
-                                    <option value="" disabled>Wybierz pojazd</option>
+                                    onChange={(e) => assignVehicleToGarage(garage.id, e.target.value)}
+                                    defaultValue=""
+
+                                <option value="" disabled>
+                                    Wybierz pojazd
+                                </option>
                                     {vehicles.map((vehicle) => (
                                         <option key={vehicle.id} value={vehicle.id}>
-                                            {vehicle.name}
+                                            {vehicle.name} - {vehicle.type}
                                         </option>
                                     ))}
-                                </select>
+                            </select>
                                 <button onClick={() => assignVehicleToGarage(garage.id)}>
                                     Przypisz
                                 </button>
@@ -144,5 +153,4 @@ function GarageManager() {
         </div>
     );
 }
-
 export default GarageManager;

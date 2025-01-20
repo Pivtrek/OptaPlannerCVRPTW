@@ -28,7 +28,7 @@ public class Garage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({"email", "password", "vehicles", "warehouses"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "email", "vehicles"})
     private User user;
 
     // Gettery i Settery
