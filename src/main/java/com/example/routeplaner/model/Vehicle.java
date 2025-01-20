@@ -29,6 +29,11 @@ public class Vehicle {
     @JsonIgnoreProperties({"username", "email", "password", "hibernateLazyInitializer", "handler"})
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "garage_id")
+    @JsonIgnoreProperties({"vehicles", "hibernateLazyInitializer", "handler"})
+    private Garage garage;
+
 
     // Getters and setters
     public Long getId() {
