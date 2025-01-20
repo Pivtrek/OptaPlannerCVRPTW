@@ -47,9 +47,10 @@ public class GarageService {
                 .orElseThrow(() -> new IllegalArgumentException("Garage not found"));
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
-
         // Dodaj pojazd do listy pojazdów garażu
+        vehicle.setGarage(garage);
         garage.getVehicles().add(vehicle);
+        vehicleRepository.save(vehicle);
         return garageRepository.save(garage);
     }
 

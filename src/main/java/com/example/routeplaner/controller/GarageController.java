@@ -44,7 +44,7 @@ public class GarageController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{garageId}/vehicles/{vehicleId}")
+    @PostMapping("/{garageId}/vehicles/{vehicleId}")
     public Garage assignVehicleToGarage(@PathVariable Long garageId, @PathVariable Long vehicleId) {
         return garageService.assignVehicleToGarage(garageId, vehicleId);
     }
