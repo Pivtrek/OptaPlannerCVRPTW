@@ -1,8 +1,9 @@
 package com.example.routeplaner.optimization.model;
 
+import com.example.routeplaner.model.Vehicle;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+
 
 import java.util.List;
 
