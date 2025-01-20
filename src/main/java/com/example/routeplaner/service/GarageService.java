@@ -50,15 +50,21 @@ public class GarageService {
 
         // Dodaj pojazd do listy pojazdów garażu
         garage.getVehicles().add(vehicle);
+        vehicle.setGarage(garage);
         return garageRepository.save(garage);
     }
 
     public Garage removeVehicleFromGarage(Long garageId, Long vehicleId) {
         Garage garage = garageRepository.findById(garageId)
                 .orElseThrow(() -> new IllegalArgumentException("Garage not found"));
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+        //ustawienie kolumny garage_id na null
+        vehicle.setGarage(null);
+        vehicleRepository.save(vehicle);
 
         // Usuń pojazd z listy pojazdów garażu
-        garage.getVehicles().removeIf(vehicle -> vehicle.getId().equals(vehicleId));
+        garage.getVehicles().removeIf(v -> v.getId().equals(vehicleId));
         return garageRepository.save(garage);
     }
 }
