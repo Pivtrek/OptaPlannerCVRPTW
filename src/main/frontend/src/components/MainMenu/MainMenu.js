@@ -9,6 +9,7 @@ function MainMenu() {
             <h1>Menu Główne</h1>
             <button onClick={() => navigate("/fleet")}>Edycja floty</button>
             <button onClick={() => navigate("/warehouses")}>Edycja magazynów</button>
+            <button onClick={() => navigate("/garages")}>Edycja garaży</button>
             <button onClick={() => navigate("/routes")}>Wytyczanie trasy</button>
         </div>
     );
