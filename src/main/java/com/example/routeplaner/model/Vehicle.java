@@ -1,9 +1,16 @@
 package com.example.routeplaner.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -36,7 +43,38 @@ public class Vehicle {
     @JsonIgnoreProperties({"vehicles", "hibernateLazyInitializer", "handler"})
     private Garage garage;
 
-    // Getters and setters (wygenerowane przez Lombok)
+
+    @PlanningListVariable(valueRangeProviderRefs = "warehouseRange")
+    @Transient
+    private List<Warehouse> visitedWarehouses = new ArrayList<>();
+
+    public int getTotalVehicles() {
+        return totalVehicles;
+    }
+
+    public void setTotalVehicles(int totalVehicles) {
+        this.totalVehicles = totalVehicles;
+    }
+
+    public int getTotalWarehouses() {
+        return totalWarehouses;
+    }
+
+    public void setTotalWarehouses(int totalWarehouses) {
+        this.totalWarehouses = totalWarehouses;
+    }
+
+    private int totalWarehouses;
+    private int totalVehicles;
+
+    public List<Warehouse> getVisitedWarehouses() {
+        return visitedWarehouses;
+    }
+
+    public void setVisitedWarehouses(List<Warehouse> visitedWarehouses) {
+        this.visitedWarehouses = visitedWarehouses;
+    }
+
 
     public Long getId() {
         return id;
@@ -85,7 +123,6 @@ public class Vehicle {
     public void setGarage(Garage garage) {
         this.garage = garage;
     }
-
 
     // Metoda do pobrania lokalizacji z garażu
     public double[] getLocation() {

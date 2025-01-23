@@ -4,17 +4,17 @@
     <solutionClass>com.example.routeplaner.optimization.model.RoutePlan</solutionClass>
 
     <!-- Klasa/kategorie encji, które będą przestawiane przez OptaPlanner -->
-    <entityClass>com.example.routeplaner.optimization.model.Vehicle</entityClass>
-    <entityClass>com.example.routeplaner.optimization.model.Warehouse</entityClass>
+    <entityClass>com.example.routeplaner.model.Vehicle</entityClass>
+
 
     <!-- Fabryka reguł punktacji -->
     <scoreDirectorFactory>
-        <scoreDrl>routePlanScoreRules.drl</scoreDrl>
+        <constraintProviderClass>com.example.routeplaner.optimization.rules.RoutePlanConstraintProvider</constraintProviderClass>
     </scoreDirectorFactory>
 
     <!-- Algorytmy heurystyczne -->
     <termination>
         <!-- Limit czasowy -->
-        <secondsSpentLimit>30</secondsSpentLimit>
+        <secondsSpentLimit>10</secondsSpentLimit>
     </termination>
 </solver>

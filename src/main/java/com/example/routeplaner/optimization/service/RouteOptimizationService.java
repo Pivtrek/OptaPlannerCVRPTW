@@ -1,22 +1,28 @@
 package com.example.routeplaner.optimization.service;
 
+import com.example.routeplaner.model.Garage;
+import com.example.routeplaner.model.Vehicle;
+import com.example.routeplaner.model.Warehouse;
 import com.example.routeplaner.optimization.model.RoutePlan;
 import org.hibernate.sql.exec.ExecutionException;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RouteOptimizationService {
 
+    @Autowired
     private final SolverManager<RoutePlan, Long> solverManager;
 
     public RouteOptimizationService(SolverManager<RoutePlan, Long> solverManager) {
         this.solverManager = solverManager;
     }
 
-    public void solve(RoutePlan routePlan) {
+    public RoutePlan solve(RoutePlan routePlan) {
         SolverJob<RoutePlan, Long> solverJob = solverManager.solveAndListen(
                 1L, // Unikalny identyfikator dla sesji rozwiązywania
                 id -> routePlan, // Funkcja do załadowania początkowego problemu
@@ -33,5 +39,6 @@ public class RouteOptimizationService {
         } catch (InterruptedException | ExecutionException | java.util.concurrent.ExecutionException e) {
             System.err.println("Błąd podczas rozwiązywania: " + e.getMessage());
         }
+        return routePlan;
     }
 }
