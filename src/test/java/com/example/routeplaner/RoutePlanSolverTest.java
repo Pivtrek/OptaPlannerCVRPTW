@@ -90,12 +90,12 @@ public class RoutePlanSolverTest {
         warehouse6.setLatitude(53.4285438); // Szczecin
         warehouse6.setLongitude(-10.5528118);
 
-        warehouse1.setLoad(1000);
+        warehouse1.setLoad(2000);
         warehouse2.setLoad(1000);
-        warehouse3.setLoad(500);
-        warehouse4.setLoad(500);
+        warehouse3.setLoad(1000);
+        warehouse4.setLoad(2000);
         warehouse5.setLoad(500);
-        warehouse6.setLoad(500);
+        warehouse6.setLoad(1000);
 
         routePlan.setWarehouseList(List.of(warehouse1, warehouse2, warehouse3, warehouse4, warehouse5, warehouse6));
 
@@ -143,9 +143,27 @@ public class RoutePlanSolverTest {
     private void logRoutePlan(RoutePlan routePlan) {
         for (Vehicle vehicle : routePlan.getVehicleList()) {
             System.out.println("Vehicle: " + vehicle.getName());
-            for (Warehouse warehouse : vehicle.getVisitedWarehouses()) {
-                System.out.println(" - Visits: " + warehouse.getName());
+
+            List<Warehouse> visitedWarehouses = vehicle.getVisitedWarehouses();
+            if (visitedWarehouses == null || visitedWarehouses.isEmpty()) {
+                System.out.println(" - No warehouses assigned.");
+                continue;
             }
+
+            int tripNumber = 1;
+            int currentLoad = 0;
+            System.out.println(" Trips:");
+            for (Warehouse warehouse : visitedWarehouses) {
+                // Logika rozdzielania na kursy
+                if (currentLoad + warehouse.getLoad() > vehicle.getCapacity()) {
+                    System.out.println("  Trip " + tripNumber + " ends at capacity.");
+                    tripNumber++;
+                    currentLoad = 0;
+                }
+                System.out.println("   Trip " + tripNumber + " - Visits: " + warehouse.getName() + " (Load: " + warehouse.getLoad() + ")");
+                currentLoad += warehouse.getLoad();
+            }
+            System.out.println("  Trip " + tripNumber + " ends at garage.");
         }
     }
 }

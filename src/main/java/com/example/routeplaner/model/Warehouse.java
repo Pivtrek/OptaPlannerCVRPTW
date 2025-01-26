@@ -33,6 +33,40 @@ public class Warehouse {
     @Column(nullable = true)
     private String openingHours; // np. "08:00-16:00", opcjonalne
 
+    @Column(nullable = true)
+    private int serviceTime;
+
+    @Transient
+    private int openTime;
+    @Transient
+    private int closeTime;
+
+    public void setOpenTime(int openTime) {
+        this.openTime = openTime;
+    }
+
+    public void setCloseTime(int closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public int getOpenTime() {
+        return openTime;
+    }
+
+    public int getCloseTime() {
+        return closeTime;
+    }
+
+    //TODO: setCLOSEandOPENtime based on openingHours
+
+    public int getServiceTime() {
+        return serviceTime;
+    }
+
+    public void setServiceTime(int serviceTime) {
+        this.serviceTime = serviceTime;
+    }
+
     @JsonIgnore
     @PlanningVariable(valueRangeProviderRefs = "vehicleRange")
     @Transient
