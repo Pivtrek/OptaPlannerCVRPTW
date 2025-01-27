@@ -30,15 +30,21 @@ public class Warehouse {
     @Column(nullable = false)
     private Double longitude;
 
+
+
     @Column(nullable = true)
     private String openingHours; // np. "08:00-16:00", opcjonalne
 
-    @Column(nullable = true)
+    @Transient
+    @JsonIgnore
     private int serviceTime;
 
-    @Transient
+
+    @JsonIgnore
+    @Column(nullable = true)
     private int openTime;
-    @Transient
+    @JsonIgnore
+    @Column(nullable = true)
     private int closeTime;
 
     public void setOpenTime(int openTime) {
@@ -57,7 +63,6 @@ public class Warehouse {
         return closeTime;
     }
 
-    //TODO: setCLOSEandOPENtime based on openingHours
 
     public int getServiceTime() {
         return serviceTime;
@@ -98,7 +103,8 @@ public class Warehouse {
         this.assignedVehicle = assignedVehicle;
     }
 
-
+    @JsonIgnore
+    @Column(nullable = true)
     private int load;
 
     public int getLoad() {

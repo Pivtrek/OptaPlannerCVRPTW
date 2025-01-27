@@ -42,6 +42,7 @@ public class RoutePlanSolverTest {
         // Check if solution is generated
         assertNotNull(solvedRoutePlan);
 
+
         // Log solved state
         System.out.println("Solved RoutePlan:");
         logRoutePlan(solvedRoutePlan);

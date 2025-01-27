@@ -21,8 +21,9 @@ public class RoutePlanConstraintProvider implements ConstraintProvider {
                 ensureBalancedAssignment(constraintFactory),
                 balanceWorkload(constraintFactory),
                 limitMaxWarehouses(constraintFactory),
-                balanceVehicleDistances(constraintFactory),
-                enforceVehicleCapacity(constraintFactory)
+                //balanceVehicleDistances(constraintFactory),
+                enforceVehicleCapacity(constraintFactory),
+                enforceTimeWindows(constraintFactory),
         };
     }
 
@@ -34,7 +35,7 @@ public class RoutePlanConstraintProvider implements ConstraintProvider {
                     int averageWarehouses = totalWarehouses / totalVehicles;
 
                     // Penalizuj różnice w liczbie magazynów przypisanych do pojazdu
-                    return Math.abs(vehicle.getVisitedWarehouses().size() - averageWarehouses);
+                    return Math.abs(vehicle.getVisitedWarehouses().size() - averageWarehouses)/10;
                 });
     }
 
@@ -52,7 +53,7 @@ public class RoutePlanConstraintProvider implements ConstraintProvider {
     private Constraint minimizeDistance(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Vehicle.class)
                 .filter(vehicle -> !vehicle.getVisitedWarehouses().isEmpty())
-                .penalize("Total distance", HardSoftScore.ONE_SOFT, vehicle -> {
+                .penalize("Total distance", HardSoftScore.ONE_HARD, vehicle -> {
                     List<Warehouse> visitedWarehouses = vehicle.getVisitedWarehouses();
                     int totalDistance = 0;
 
@@ -71,6 +72,22 @@ public class RoutePlanConstraintProvider implements ConstraintProvider {
                 })
                 ;
     }
+
+    private Constraint enforceTimeWindows(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(Vehicle.class)
+                .join(Warehouse.class, Joiners.filtering((vehicle, warehouse) -> {
+                    int travelTime = calculateDistance(vehicle.getGarage(), warehouse);
+                    int serviceStartTime = travelTime + warehouse.getServiceTime();
+                    return serviceStartTime < warehouse.getOpenTime() || serviceStartTime > warehouse.getCloseTime();
+                }))
+                .penalize("Time window violation", HardSoftScore.ONE_HARD);
+    }
+
+    private int calculateTravelTime(Warehouse from, Warehouse to) {
+        // Przykładowa kalkulacja czasu przejazdu (np. 1 km = 1 minuta)
+        return calculateDistance(from, to);
+    }
+
 
     private int calculateDistance(Warehouse from, Warehouse to) {
         double distance = Math.sqrt(

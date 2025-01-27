@@ -3,6 +3,7 @@ package com.example.routeplaner.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @PlanningEntity
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Vehicle {
 
     @Id
@@ -39,7 +41,8 @@ public class Vehicle {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "garage_id")
+    @JoinColumn(name = "garage_id", nullable = true)
+    @JsonIgnore
     @JsonIgnoreProperties({"vehicles", "hibernateLazyInitializer", "handler"})
     private Garage garage;
 
@@ -64,7 +67,9 @@ public class Vehicle {
         this.totalWarehouses = totalWarehouses;
     }
 
+    @Transient
     private int totalWarehouses;
+    @Transient
     private int totalVehicles;
 
     public List<Warehouse> getVisitedWarehouses() {
@@ -122,13 +127,5 @@ public class Vehicle {
 
     public void setGarage(Garage garage) {
         this.garage = garage;
-    }
-
-    // Metoda do pobrania lokalizacji z garażu
-    public double[] getLocation() {
-        if (garage != null) {
-            return new double[]{garage.getLatitude(), garage.getLongitude()};
-        }
-        throw new IllegalStateException("Vehicle is not assigned to any garage.");
     }
 }

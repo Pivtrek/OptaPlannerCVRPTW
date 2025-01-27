@@ -1,5 +1,4 @@
-//API: AIzaSyDavdCnLdO5lrvmQ5hHZV2VeXdV4ZF0lXU
-
+// Updated with Bootstrap styling for WarehouseManager.js
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
@@ -10,7 +9,7 @@ const mapContainerStyle = {
 };
 
 const defaultCenter = {
-    lat: 52.2296756, // Warszawa jako domyślna lokalizacja
+    lat: 52.2296756,
     lng: 21.0122287,
 };
 
@@ -19,14 +18,11 @@ function WarehouseManager() {
     const [newWarehouse, setNewWarehouse] = useState({
         name: "",
         address: "",
-        latitude: "",
-        longitude: "",
-        openingHours: "",
     });
     const [selectedLocation, setSelectedLocation] = useState(defaultCenter);
 
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: "AIzaSyDavdCnLdO5lrvmQ5hHZV2VeXdV4ZF0lXU", // Wklej tutaj swój klucz API Google Maps
+        googleMapsApiKey: "AIzaSyDavdCnLdO5lrvmQ5hHZV2VeXdV4ZF0lXU", // Replace with your API key
     });
 
     const fetchWarehouses = async () => {
@@ -34,20 +30,7 @@ function WarehouseManager() {
             const response = await api.get("/warehouses");
             setWarehouses(response.data);
         } catch (error) {
-            console.error("Błąd podczas pobierania magazynów:", error);
-        }
-    };
-
-    const deleteWarehouse = async (id) => {
-        try {
-            await api.delete(`/warehouses/${id}`);
-            setWarehouses((prevWarehouses) =>
-                prevWarehouses.filter((warehouse) => warehouse.id !== id)
-            );
-            alert("Magazyn został usunięty.");
-        } catch (error) {
-            console.error("Błąd podczas usuwania magazynu:", error);
-            alert("Nie udało się usunąć magazynu.");
+            console.error("Error fetching warehouses:", error);
         }
     };
 
@@ -59,17 +42,22 @@ function WarehouseManager() {
                 longitude: selectedLocation.lng,
             });
             setWarehouses((prev) => [...prev, response.data]);
-            setNewWarehouse({
-                name: "",
-                address: "",
-                latitude: "",
-                longitude: "",
-                openingHours: "",
-            });
-            alert("Magazyn został dodany!");
+            setNewWarehouse({ name: "", address: "" });
+            alert("Warehouse added successfully!");
         } catch (error) {
-            console.error("Błąd podczas dodawania magazynu:", error);
-            alert("Nie udało się dodać magazynu.");
+            console.error("Error adding warehouse:", error);
+            alert("Failed to add warehouse.");
+        }
+    };
+
+    const deleteWarehouse = async (id) => {
+        try {
+            await api.delete(`/warehouses/${id}`);
+            setWarehouses((prev) => prev.filter((warehouse) => warehouse.id !== id));
+            alert("Warehouse deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting warehouse:", error);
+            alert("Failed to delete warehouse.");
         }
     };
 
@@ -77,88 +65,80 @@ function WarehouseManager() {
         fetchWarehouses();
     }, []);
 
-    if (!isLoaded) return <div>Ładowanie mapy...</div>;
+    if (!isLoaded) return <p>Loading map...</p>;
 
     return (
-        <div>
-            <h1>Zarządzanie Magazynami</h1>
+        <div className="container py-5">
+            <div className="card p-4 shadow-lg">
+                <h1 className="text-center mb-4">Zarządzanie Magazynami</h1>
 
-            {/* Formularz dodawania magazynu */}
-            <h2>Dodaj Magazyn</h2>
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    addWarehouse();
-                }}
-            >
-                <div>
-                    <label>Nazwa:</label>
-                    <input
-                        type="text"
-                        value={newWarehouse.name}
-                        onChange={(e) =>
-                            setNewWarehouse({ ...newWarehouse, name: e.target.value })
-                        }
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Adres:</label>
-                    <input
-                        type="text"
-                        value={newWarehouse.address}
-                        onChange={(e) =>
-                            setNewWarehouse({ ...newWarehouse, address: e.target.value })
-                        }
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Godziny otwarcia:</label>
-                    <input
-                        type="text"
-                        value={newWarehouse.openingHours}
-                        onChange={(e) =>
-                            setNewWarehouse({ ...newWarehouse, openingHours: e.target.value })
-                        }
-                    />
-                </div>
-                <button type="submit">Dodaj Magazyn</button>
-            </form>
+                <h2 className="mb-3">Dodaj Magazyn</h2>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        addWarehouse();
+                    }}
+                >
+                    <div className="mb-3">
+                        <label className="form-label">Nazwa Magazynu:</label>
+                        <input
+                            type="text"
+                            value={newWarehouse.name}
+                            onChange={(e) => setNewWarehouse({ ...newWarehouse, name: e.target.value })}
+                            required
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Adres:</label>
+                        <input
+                            type="text"
+                            value={newWarehouse.address}
+                            onChange={(e) => setNewWarehouse({ ...newWarehouse, address: e.target.value })}
+                            required
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Wybierz Lokalizację:</label>
+                        <GoogleMap
+                            mapContainerStyle={mapContainerStyle}
+                            center={selectedLocation}
+                            zoom={10}
+                            onClick={(event) =>
+                                setSelectedLocation({
+                                    lat: event.latLng.lat(),
+                                    lng: event.latLng.lng(),
+                                })
+                            }
+                        >
+                            <Marker position={selectedLocation} />
+                        </GoogleMap>
+                    </div>
+                    <button type="submit" className="btn btn-primary w-100">Dodaj Magazyn</button>
+                </form>
+            </div>
 
-            {/* Mapa Google */}
-            <h2>Wybierz Lokalizację na Mapie</h2>
-            <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                zoom={10}
-                center={defaultCenter}
-                onClick={(event) =>
-                    setSelectedLocation({
-                        lat: event.latLng.lat(),
-                        lng: event.latLng.lng(),
-                    })
-                }
-            >
-                {/* Marker wskazuje wybraną lokalizację */}
-                <Marker position={selectedLocation} />
-            </GoogleMap>
-
-
-            <h2>Lista Magazynów</h2>
-            {warehouses.length === 0 ? (
-                <p>Brak magazynów do wyświetlenia.</p>
-            ) : (
-                <ul>
-                    {warehouses.map((warehouse) => (
-                        <li key={warehouse.id}>
-                            {warehouse.name} - {warehouse.address} - {warehouse.latitude},{" "}
-                            {warehouse.longitude} - {warehouse.openingHours}
-                            <button onClick={() => deleteWarehouse(warehouse.id)}>Usuń</button>
-                        </li>
-                    ))}
-                </ul>
-            )}
-
+            <div className="mt-5">
+                <h2 className="mb-3">Lista Magazynów</h2>
+                {warehouses.length === 0 ? (
+                    <p className="text-muted">Brak magazynów do wyświetlenia.</p>
+                ) : (
+                    <ul className="list-group">
+                        {warehouses.map((warehouse) => (
+                            <li key={warehouse.id} className="list-group-item d-flex justify-content-between align-items-center">
+                                {warehouse.name} - {warehouse.address} - {warehouse.latitude}, {warehouse.longitude}
+                                <button
+                                    onClick={() => deleteWarehouse(warehouse.id)}
+                                    className="btn btn-danger btn-sm"
+                                >
+                                    Usuń
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
         </div>
     );
 }

@@ -15,7 +15,7 @@
     <!-- Algorytmy heurystyczne -->
     <termination>
         <!-- Limit czasowy -->
-        <secondsSpentLimit>30
+        <secondsSpentLimit>200
         </secondsSpentLimit>
     </termination>
 </solver>
