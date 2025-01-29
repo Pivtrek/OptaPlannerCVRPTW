@@ -17,8 +17,14 @@ function GarageManager() {
     const [garages, setGarages] = useState([]);
     const [newGarage, setNewGarage] = useState({
         name: "",
+        latitude: "",
+        longitude: "",
     });
+    const [garageVehicles, setGarageVehicles] = useState({});
+    const [vehicles, setVehicles] = useState([]);
     const [markerPosition, setMarkerPosition] = useState(defaultCenter);
+    const [selectedCoordinates, setSelectedCoordinates] = useState(defaultCenter); // Współrzędne mapy
+    const [selectedVehicles, setSelectedVehicles] = useState({});
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: "AIzaSyDavdCnLdO5lrvmQ5hHZV2VeXdV4ZF0lXU", // Replace with your API key
@@ -29,6 +35,26 @@ function GarageManager() {
             const response = await api.get("/garages");
             setGarages(response.data);
         } catch (error) {
+            console.error("Error fetching garages:", error);
+        }
+    };
+    const handleRemoveVehicleFromGarage = async (garageId, vehicleId) => {
+        try {
+            await api.delete(`/garages/${garageId}/vehicles/${vehicleId}`);
+            alert("Pojazd usunięty z garażu!");
+            fetchGarages(); // Odśwież listę garaży
+        } catch (error) {
+            console.error("Błąd podczas usuwania pojazdu z garażu:", error);
+            alert("Nie udało się usunąć pojazdu.");
+        }
+    };
+    // Pobranie pojazdów z backendu
+    const fetchVehicles = async () => {
+        try {
+            const response = await api.get("/vehicles");
+            setVehicles(response.data);
+        } catch (error) {
+            console.error("Błąd podczas pobierania pojazdów:", error);
             console.error("Error fetching garages:", error);
         }
     };
@@ -60,11 +86,41 @@ function GarageManager() {
         }
     };
 
+    // Przypisywanie pojazdu do garażu
+    const handleAssignVehicle = async (garageId, vehicleId) => {
+        if (!vehicleId || !garageId) {
+            alert("Wybierz poprawny pojazd i garaż.");
+            return;
+        }
+
+        try {
+            await api.post(`/garages/${garageId}/vehicles/${vehicleId}`);
+            const assignedVehicle = vehicles.find((v) => v.id === vehicleId);
+            setGarageVehicles((prev) => ({
+                ...prev,
+                [garageId]: [...(prev[garageId] || []), assignedVehicle]
+            }));
+
+            setSelectedVehicles((prevState) => ({
+                ...prevState,
+                [garageId]: vehicleId
+            }));
+
+            alert("Pojazd przypisany do garażu!");
+            fetchGarages();
+        } catch (error) {
+            console.error("Błąd podczas przypisywania pojazdu:", error);
+            alert("Nie udało się przypisać pojazdu.");
+        }
+    };
+
+
     useEffect(() => {
         fetchGarages();
+        fetchVehicles();
     }, []);
 
-    if (!isLoaded) return <p>Loading map...</p>;
+    if (!isLoaded) return <p>Ładowanie mapy...</p>;
 
     return (
         <div className="container py-5">
@@ -109,23 +165,56 @@ function GarageManager() {
             </div>
 
             <div className="mt-5">
-                <h2 className="mb-3">Lista Garaży</h2>
-                {garages.length === 0 ? (
-                    <p className="text-muted">Brak garaży do wyświetlenia.</p>
-                ) : (
-                    <ul className="list-group">
-                        {garages.map((garage) => (
-                            <li key={garage.id} className="list-group-item d-flex justify-content-between align-items-center">
-                                {garage.name} - {garage.latitude}, {garage.longitude}
-                                <button
-                                    onClick={() => deleteGarage(garage.id)}
-                                    className="btn btn-danger btn-sm"
+                <h2>Lista Garaży</h2>
+                {Array.isArray(garages) && garages.length > 0 ? (
+                    garages.map((garage) => (
+                        <div key={garage.id}>
+                            <h3>{garage.name}</h3>
+                            <p>Lokalizacja: {garage.latitude}, {garage.longitude}</p>
+                            <div>
+                                <label>Przypisz pojazd:</label>
+                                <select
+                                    value={selectedVehicles[garage.id] || ""}
+                                    onChange={(e) => handleAssignVehicle(garage.id, e.target.value)}
                                 >
-                                    Usuń
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
+                                    <option value="">-- Wybierz pojazd --</option>
+                                    {Array.isArray(vehicles) && vehicles.length > 0 ? (
+                                        vehicles.map((vehicle) => (
+                                            vehicle && (
+                                                <option key={vehicle.id} value={vehicle.id}>
+                                                    {vehicle.name} - {vehicle.type}
+                                                </option>
+                                            )
+                                        ))
+                                    ) : (
+                                        <option disabled>Brak pojazdów</option>
+                                    )}
+                                </select>
+                            </div>
+                            <h4>Pojazdy w garażu:</h4>
+                            <ul>
+                                {garage.vehicles && garage.vehicles.length > 0 ? (
+                                    garage.vehicles.map((vehicle) => (
+                                        <li key={vehicle.id}>
+                                            {vehicle.name} - {vehicle.type}
+                                            <button
+                                                onClick={() =>
+                                                    handleRemoveVehicleFromGarage(garage.id, vehicle.id)
+                                                }
+                                            >
+                                                Usuń z garażu
+                                            </button>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <p>Brak pojazdów w tym garażu.</p>
+                                )}
+                            </ul>
+                            <button onClick={() => deleteGarage(garage.id)}>Usuń garaż</button>
+                        </div>
+                    ))
+                ) : (
+                    <p>Brak garaży do wyświetlenia.</p>
                 )}
             </div>
         </div>

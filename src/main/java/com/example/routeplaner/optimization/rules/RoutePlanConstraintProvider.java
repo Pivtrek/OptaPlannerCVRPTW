@@ -21,7 +21,6 @@ public class RoutePlanConstraintProvider implements ConstraintProvider {
                 ensureBalancedAssignment(constraintFactory),
                 balanceWorkload(constraintFactory),
                 limitMaxWarehouses(constraintFactory),
-                //balanceVehicleDistances(constraintFactory),
                 enforceVehicleCapacity(constraintFactory),
                 enforceTimeWindows(constraintFactory),
         };
@@ -33,22 +32,19 @@ public class RoutePlanConstraintProvider implements ConstraintProvider {
                     int totalVehicles = vehicle.getTotalVehicles();
                     int totalWarehouses = vehicle.getTotalWarehouses();
                     int averageWarehouses = totalWarehouses / totalVehicles;
-
-                    // Penalizuj różnice w liczbie magazynów przypisanych do pojazdu
-                    return Math.abs(vehicle.getVisitedWarehouses().size() - averageWarehouses)/10;
+                    return Math.abs(vehicle.getVisitedWarehouses().size() - averageWarehouses);
                 });
     }
 
     private Constraint limitMaxWarehouses(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Vehicle.class)
-                .filter(vehicle -> vehicle.getVisitedWarehouses() != null) // Upewniamy się, że lista nie jest nullem
+                .filter(vehicle -> vehicle.getVisitedWarehouses() != null)
                 .penalize("Limit max warehouses per vehicle", HardSoftScore.ONE_HARD, vehicle -> {
                     int maxWarehousesPerVehicle = (int) Math.ceil((double) vehicle.getTotalWarehouses() / vehicle.getTotalVehicles());
                     int excessWarehouses = Math.max(0, vehicle.getVisitedWarehouses().size() - maxWarehousesPerVehicle);
                     return excessWarehouses;
                 });
     }
-    // capacity, okna czasowa, pickup/delivery,
 
     private Constraint minimizeDistance(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Vehicle.class)
@@ -59,18 +55,14 @@ public class RoutePlanConstraintProvider implements ConstraintProvider {
 
                     // Odległość z garażu do pierwszego magazynu
                     totalDistance += calculateDistance(vehicle.getGarage(), visitedWarehouses.get(0));
-
                     // Odległości między kolejnymi magazynami
                     for (int i = 0; i < visitedWarehouses.size() - 1; i++) {
                         totalDistance += calculateDistance(visitedWarehouses.get(i), visitedWarehouses.get(i + 1));
                     }
-
                     // Odległość z ostatniego magazynu do garażu
                     totalDistance += calculateDistance(visitedWarehouses.get(visitedWarehouses.size() - 1), vehicle.getGarage());
-
                     return totalDistance;
-                })
-                ;
+                });
     }
 
     private Constraint enforceTimeWindows(ConstraintFactory constraintFactory) {
@@ -113,31 +105,6 @@ public class RoutePlanConstraintProvider implements ConstraintProvider {
         return (int) distance;
     }
 
-    private Constraint balanceVehicleDistances(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Vehicle.class)
-                .join(Vehicle.class,
-                        Joiners.equal(Vehicle::getGarage),
-                        Joiners.equal(Vehicle::getGarage))
-                .penalize("Penalize unbalanced distances", HardSoftScore.ONE_SOFT,(vehicleA, vehicleB) -> {
-                    int distanceA = calculateTotalDistance(vehicleA);
-                    int distanceB = calculateTotalDistance(vehicleB);
-                    return Math.abs(distanceA - distanceB);
-                });
-    }
-
-    private int calculateTotalDistance(Vehicle vehicle) {
-        List<Warehouse> visitedWarehouses = vehicle.getVisitedWarehouses();
-        int totalDistance = 0;
-
-        if (!visitedWarehouses.isEmpty()) {
-            totalDistance += calculateDistance(vehicle.getGarage(), visitedWarehouses.get(0));
-            for (int i = 0; i < visitedWarehouses.size() - 1; i++) {
-                totalDistance += calculateDistance(visitedWarehouses.get(i), visitedWarehouses.get(i + 1));
-            }
-            totalDistance += calculateDistance(visitedWarehouses.get(visitedWarehouses.size() - 1), vehicle.getGarage());
-        }
-        return totalDistance;
-    }
 
     private Constraint ensureBalancedAssignment(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Vehicle.class)

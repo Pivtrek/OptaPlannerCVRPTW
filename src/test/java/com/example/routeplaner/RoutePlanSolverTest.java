@@ -26,24 +26,13 @@ public class RoutePlanSolverTest {
         // Stwórz przykładowy RoutePlan
         RoutePlan routePlan = createExampleRoutePlan();
 
-
-//        for (Vehicle vehicle : routePlan.getVehicleList()) {
-//            vehicle.setVisitedWarehouses(new ArrayList<>());
-//            vehicle.getVisitedWarehouses().add(routePlan.getWarehouseList().getFirst()); // Przypisz magazyn startowy tutaj
-//        }
-
         System.out.println("Initial RoutePlan:");
         logRoutePlan(routePlan);
         // Rozwiąż problem
         RoutePlan solvedRoutePlan = solver.solve(routePlan);
 
-        // Sprawdź, czy rozwiązanie zostało wygenerowane
-
-        // Check if solution is generated
         assertNotNull(solvedRoutePlan);
 
-
-        // Log solved state
         System.out.println("Solved RoutePlan:");
         logRoutePlan(solvedRoutePlan);
 

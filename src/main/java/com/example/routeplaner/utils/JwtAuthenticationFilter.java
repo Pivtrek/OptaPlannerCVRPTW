@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Pobranie tokena z nagłówka Authorization
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response); // Jeśli brak tokena, przejdź do następnego filtra
+            filterChain.doFilter(request, response);
             return;
         }
 

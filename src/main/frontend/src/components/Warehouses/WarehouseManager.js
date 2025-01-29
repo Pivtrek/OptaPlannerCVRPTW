@@ -18,11 +18,12 @@ function WarehouseManager() {
     const [newWarehouse, setNewWarehouse] = useState({
         name: "",
         address: "",
+        openingHours: "",
     });
     const [selectedLocation, setSelectedLocation] = useState(defaultCenter);
 
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: "AIzaSyDavdCnLdO5lrvmQ5hHZV2VeXdV4ZF0lXU", // Replace with your API key
+        googleMapsApiKey: "AIzaSyDavdCnLdO5lrvmQ5hHZV2VeXdV4ZF0lXU",
     });
 
     const fetchWarehouses = async () => {
@@ -42,7 +43,7 @@ function WarehouseManager() {
                 longitude: selectedLocation.lng,
             });
             setWarehouses((prev) => [...prev, response.data]);
-            setNewWarehouse({ name: "", address: "" });
+            setNewWarehouse({ name: "", address: "" , openingHours: ""});
             alert("Warehouse added successfully!");
         } catch (error) {
             console.error("Error adding warehouse:", error);
@@ -84,7 +85,7 @@ function WarehouseManager() {
                         <input
                             type="text"
                             value={newWarehouse.name}
-                            onChange={(e) => setNewWarehouse({ ...newWarehouse, name: e.target.value })}
+                            onChange={(e) => setNewWarehouse({...newWarehouse, name: e.target.value})}
                             required
                             className="form-control"
                         />
@@ -94,7 +95,17 @@ function WarehouseManager() {
                         <input
                             type="text"
                             value={newWarehouse.address}
-                            onChange={(e) => setNewWarehouse({ ...newWarehouse, address: e.target.value })}
+                            onChange={(e) => setNewWarehouse({...newWarehouse, address: e.target.value})}
+                            required
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Godziny otwarcia:</label>
+                        <input
+                            type="text"
+                            value={newWarehouse.openingHours}
+                            onChange={(e) => setNewWarehouse({...newWarehouse, openingHours: e.target.value})}
                             required
                             className="form-control"
                         />
@@ -112,7 +123,7 @@ function WarehouseManager() {
                                 })
                             }
                         >
-                            <Marker position={selectedLocation} />
+                            <Marker position={selectedLocation}/>
                         </GoogleMap>
                     </div>
                     <button type="submit" className="btn btn-primary w-100">Dodaj Magazyn</button>
@@ -126,7 +137,8 @@ function WarehouseManager() {
                 ) : (
                     <ul className="list-group">
                         {warehouses.map((warehouse) => (
-                            <li key={warehouse.id} className="list-group-item d-flex justify-content-between align-items-center">
+                            <li key={warehouse.id}
+                                className="list-group-item d-flex justify-content-between align-items-center">
                                 {warehouse.name} - {warehouse.address} - {warehouse.latitude}, {warehouse.longitude}
                                 <button
                                     onClick={() => deleteWarehouse(warehouse.id)}
