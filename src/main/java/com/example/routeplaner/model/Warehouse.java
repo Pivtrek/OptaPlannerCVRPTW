@@ -1,13 +1,17 @@
 package com.example.routeplaner.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 @Entity
+@PlanningEntity
 public class Warehouse {
 
     @Id
@@ -26,14 +30,91 @@ public class Warehouse {
     @Column(nullable = false)
     private Double longitude;
 
+
+
     @Column(nullable = true)
     private String openingHours; // np. "08:00-16:00", opcjonalne
+
+    @Transient
+    @JsonIgnore
+    private int serviceTime;
+
+
+    @JsonIgnore
+    @Column(nullable = true)
+    private int openTime;
+    @JsonIgnore
+    @Column(nullable = true)
+    private int closeTime;
+
+    public void setOpenTime(int openTime) {
+        this.openTime = openTime;
+    }
+
+    public void setCloseTime(int closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public int getOpenTime() {
+        return openTime;
+    }
+
+    public int getCloseTime() {
+        return closeTime;
+    }
+
+
+    public int getServiceTime() {
+        return serviceTime;
+    }
+
+    public void setServiceTime(int serviceTime) {
+        this.serviceTime = serviceTime;
+    }
+
+    @JsonIgnore
+    @PlanningVariable(valueRangeProviderRefs = "vehicleRange")
+    @Transient
+    private Vehicle assignedVehicle;
 
     @ManyToOne // Domyślnie jest LAZY
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     @JsonIgnoreProperties({"username", "email", "password", "hibernateLazyInitializer", "handler"})
     private User user;
+
+    @PlanningVariable(valueRangeProviderRefs = "warehouseRange")
+    @Transient
+    private Warehouse nextWarehouse;
+
+    public Warehouse getNextWarehouse() {
+        return nextWarehouse;
+    }
+
+    public void setNextWarehouse(Warehouse nextWarehouse) {
+        this.nextWarehouse = nextWarehouse;
+    }
+
+    public Vehicle getAssignedVehicle() {
+        return assignedVehicle;
+    }
+
+    public void setAssignedVehicle(Vehicle assignedVehicle) {
+        this.assignedVehicle = assignedVehicle;
+    }
+
+    @JsonIgnore
+    @Column(nullable = true)
+    private int load;
+
+    public int getLoad() {
+        return load;
+    }
+
+    public void setLoad(int load) {
+        this.load = load;
+    }
+
 
     // Getters and setters
     public Long getId() {

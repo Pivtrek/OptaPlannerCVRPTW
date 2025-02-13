@@ -1,9 +1,0 @@
-POST http://localhost:8080/api/garages
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4IiwiaWF0IjoxNzM3MzU3NTY0LCJleHAiOjE3Mzc0NDM5NjR9.15fze7hJ41Su4FacRiZjtq17pmkULbFB0DmV4bVRCow
-
-{
-  "name": "Garage A",
-  "latitude": 52.2296756,
-  "longitude": 21.0122287
-}

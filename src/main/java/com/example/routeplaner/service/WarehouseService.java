@@ -22,6 +22,7 @@ public class WarehouseService {
     public Warehouse saveWarehouse(Warehouse warehouse, Long userId) {
         User user = userRepository.findById(userId).get();
         warehouse.setUser(user);
+        setOpenAndCloseHours(warehouse.getOpeningHours(), warehouse);
         return warehouseRepository.save(warehouse);
     }
 
@@ -45,5 +46,15 @@ public class WarehouseService {
             throw new RuntimeException("Warehouse not found with ID: " + id);
         }
         warehouseRepository.deleteById(id);
+    }
+
+    private void setOpenAndCloseHours(String openingHours, Warehouse warehouse){
+        if (openingHours != null) {
+            String[] times = openingHours.split("-");
+            int openTime = Integer.parseInt(times[0].split(":")[0]) * 60 + Integer.parseInt(times[0].split(":")[1]);
+            int closeTime = Integer.parseInt(times[1].split(":")[0]) * 60 + Integer.parseInt(times[1].split(":")[1]);
+            warehouse.setOpenTime(openTime);
+            warehouse.setCloseTime(closeTime);
+        }
     }
 }

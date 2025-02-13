@@ -1,3 +1,0 @@
-GET http://localhost:8080/api/vehicles?userId=8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTczNzIwODUxMywiZXhwIjoxNzM3Mjk0OTEzfQ.jENBx__D8_Lr9MUgY5Rd-2R6J6emurhWbCtHy21xxRg
-Content-Type: application/json

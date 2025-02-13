@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+    <!-- Klasa reprezentująca rozwiązanie (problem, który rozwiązujemy) -->
+    <solutionClass>com.example.routeplaner.optimization.model.RoutePlan</solutionClass>
+
+    <!-- Klasa/kategorie encji, które będą przestawiane przez OptaPlanner -->
+    <entityClass>com.example.routeplaner.model.Vehicle</entityClass>
+
+
+    <!-- Fabryka reguł punktacji -->
+    <scoreDirectorFactory>
+        <constraintProviderClass>com.example.routeplaner.optimization.rules.RoutePlanConstraintProvider</constraintProviderClass>
+    </scoreDirectorFactory>
+
+    <!-- Algorytmy heurystyczne -->
+    <termination>
+        <!-- Limit czasowy -->
+        <secondsSpentLimit>200
+        </secondsSpentLimit>
+    </termination>
+</solver>
