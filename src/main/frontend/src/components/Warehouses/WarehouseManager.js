@@ -23,7 +23,7 @@ function WarehouseManager() {
     const [selectedLocation, setSelectedLocation] = useState(defaultCenter);
 
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: "AIzaSyDavdCnLdO5lrvmQ5hHZV2VeXdV4ZF0lXU",
+        googleMapsApiKey: "YOUR_API_KEY", // replace with your api key
     });
 
     const fetchWarehouses = async () => {

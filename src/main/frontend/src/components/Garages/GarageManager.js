@@ -27,7 +27,7 @@ function GarageManager() {
     const [selectedVehicles, setSelectedVehicles] = useState({});
 
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: "AIzaSyDavdCnLdO5lrvmQ5hHZV2VeXdV4ZF0lXU", // Replace with your API key
+        googleMapsApiKey: "YOUR_API_KEY", // Replace with your API key
     });
 
     const fetchGarages = async () => {

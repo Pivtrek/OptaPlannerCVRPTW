@@ -10,7 +10,7 @@ const RoutePlanner = () => {
     const [directions, setDirections] = useState([]);
 
     const { isLoaded, loadError } = useJsApiLoader({
-        googleMapsApiKey: "AIzaSyDavdCnLdO5lrvmQ5hHZV2VeXdV4ZF0lXU",
+        googleMapsApiKey: "YOUR_API_KEY",
     });
 
     // Pobieranie danych pojazdów i magazynów z API
