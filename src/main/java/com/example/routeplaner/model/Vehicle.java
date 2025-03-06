@@ -34,13 +34,13 @@ public class Vehicle {
     @Column(nullable = false)
     private String type; // np. "truck", "van", "car"
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     @JsonIgnoreProperties({"username", "email", "password", "hibernateLazyInitializer", "handler"})
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "garage_id", nullable = true)
     @JsonIgnore
     @JsonIgnoreProperties({"vehicles", "hibernateLazyInitializer", "handler"})
