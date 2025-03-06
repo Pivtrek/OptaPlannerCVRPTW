@@ -1,6 +1,5 @@
 package com.example.routeplaner.controller;
 
-import com.example.routeplaner.exception.ResourceNotFoundException;
 import com.example.routeplaner.model.User;
 import com.example.routeplaner.model.Vehicle;
 import com.example.routeplaner.repository.UserRepository;
