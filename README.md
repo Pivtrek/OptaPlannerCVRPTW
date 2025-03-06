@@ -35,10 +35,38 @@ The backend, powered by **Spring Boot** and **OptaPlanner**, calculates the most
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone the Repository
+### Clone the Repository
 ```bash
 git clone <repo_url>
 cd <project_folder>
 ```
 
-TODO: rest of the description
+### Setup Google Maps API and Database
+You need to get api key from google maps and then apply it in frontend code.
+To set up database go to src/main/resources and in application.properties follow further instruction
+
+
+### Gradle build
+```bash
+gradle build
+```
+
+### Launch frontend 
+```bash
+cd src/main/frontend
+npm install
+npm start
+```
+
+### Launch backend
+
+run main class in RoutePlanerApplication
+
+
+
+**TODO**
+- In class RoutePlanConstraintProvider unnecesary overloaded methods calculateDistance - use interface instead
+- clean Vehicle class - variables totalVehicles and totalWarehouses should not be there 
+- Class RoutePlanConstraintProvider which is key one in this program is not readable - too much low code and computation 
+- Email registration with confirmation link
+- Memory of routes to avoid unnecesary computations
